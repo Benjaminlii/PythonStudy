@@ -8,11 +8,15 @@ from tkinter import *
 
 
 class App:
-    def __init__(self, root):
-        frame = Frame(root)
-        frame.pack()
+    def __init__(self):
+        self.root = Tk()
+        self.root.title("a title")
+        self.root.geometry("256x128")
 
-        self.hi = Button(frame, text="say hi", bg="white", fg="black", command=App.say_hi)
+        self.frame = Frame(self.root)
+        self.frame.pack(side=LEFT, padx=10, pady=10)
+
+        self.hi = Button(self.frame, text="say hi", bg="white", fg="black", command=App.say_hi)
         self.hi.pack()
 
     @staticmethod
@@ -25,12 +29,7 @@ class App:
         Label(frame, text="hi").pack()
 
 
-root = Tk()
-root.title("a title")
-root.geometry("256x128")
-
-
-app = App(root)
+app = App()
 mainloop()
 
 
