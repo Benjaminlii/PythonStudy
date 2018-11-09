@@ -19,6 +19,7 @@ root.title("计算器")
 def handle(a):
     if a == "AC":
         v1.set("")
+        v2.set("")
         return
     if a == "del":
         s = str(v1.get())
@@ -26,7 +27,14 @@ def handle(a):
         v1.set(str(v1.get())[0:num-1])
         return
     if a == "=":
-        v2.set(eval(v1.get()))
+        try:
+            v2.set(eval(v1.get()))
+        except SyntaxError:
+            v2.set("Error!")
+        except ZeroDivisionError:
+            v2.set("Error!")
+        if v2.get() == "1130" or v2.get() == "520":
+            v2.set("I Love You")
         return
     v1.set(v1.get()+str(a))
 
