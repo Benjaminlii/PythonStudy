@@ -17,7 +17,7 @@ x = np.linspace(0, 20, 100000)
 y = np.cos(x)
 y2 = np.sin(x)
 
-ax.plot(x, y, "red", x, y2, "blue")
+ax.plot(x, y)
 
 # 拉伸和显示
 plt.tight_layout()
