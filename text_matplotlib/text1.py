@@ -1,11 +1,11 @@
 from text_matplotlib.cartogram import *
-from text_matplotlib.get_data_1 import *
 
 x_data = np.random.normal(200, 20, 50000)
 get_histogram(x_data, 15)
 
-x, y_data = get_data("data.xlsx")
-x_data = np.arange(0, x, 1)
+
+x_data = np.arange(-4, 4, 0.5)
+y_data = np.sin(x_data)
 get_line_graph(x_data, y_data, "x1", "y1", "line1")
 
 x_data = np.arange(1, 20, 1)

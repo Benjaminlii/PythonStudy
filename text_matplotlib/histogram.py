@@ -2,8 +2,11 @@
     直方图 可以根据对应区间中元素的个数得到柱的高度
     author:Benjamin
 """
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+from io import BytesIO
+from lxml import etree
+import base64
 import sys
 import os
 
@@ -68,9 +71,22 @@ num = len(s)-1
 s = "\\".join(s[0:num]) + "\\image"
 if not os.path.exists(s):  # 判断是否存在文件夹
     os.makedirs(s)  # makedirs创建文件时如果路径不存在会创建这个路径
-s = s+"\\histogram"
-plt.savefig(s)
+s = s+"\\histogram.html"
+buffer = BytesIO()
+plt.savefig(buffer)
+plot_data = buffer.getvalue()
 
-# 自动调整子图的大小  使之占满整个绘图区域
-fig.tight_layout()
-plt.show()
+# 图像数据转化为 HTML 格式
+imb = base64.b64encode(plot_data)
+#imb = plot_data.encode('base64')   # 对于 Python 2.7可用
+ims = imb.decode()
+imd = "data:image/png;base64,"+ims
+iris_im =  """<img src="%s">""" % imd
+
+root = "<title>histogram</title>"
+root = root + iris_im  #将多个 html 格式的字符串连接起来
+
+# lxml 库的 etree 解析字符串为 html 代码，并写入文件
+html = etree.HTML(root)
+tree = etree.ElementTree(html)
+tree.write(s)

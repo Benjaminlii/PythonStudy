@@ -4,13 +4,13 @@
     get_histogram(data, num=10)
         参数：data为要进行直方统计的数据组
              num为直方图的区间数，默认为10
-        功能：生成直方图并存入image文件夹
+        功能：生成直方图并存入image文件夹保存为html
         返回值：void
 
     get_line_graph(x_data, y_data, x_name="x", y_name="y", label="line")
         参数：x_data和y_data分别为折线图各个点坐标的横纵坐标
              x_name和y_name分别为xy轴的名称，默认为“x”“y”
-        功能：生成折线图并保存
+        功能：生成折线图并保存为html
         返回值；void
 
     get_double_line(x_data, y_data_0, y_data_1, label_0="line0", label_1="line1", x_name="x", y_name="y")
@@ -18,13 +18,13 @@
              y_data_0和y_data_1分别为两条线的纵坐标
              label_0和label_1分别为两条线的名称（用作图例）
              x_name和y_name为xy轴的名称
-        功能：将两条折线图显示在一张图中并保存
+        功能：将两条折线图显示在一张图中并保存为html
         返回值：void
 
     get_curve(func, num=10)
         参数：func为曲线的函数
              num为横坐标的最大值（横坐标为0~num的整数）
-        功能：生成func的曲线图像并保存
+        功能：生成func的曲线图像并保存为html
         返回值：void
 
     date:2018.11.13
@@ -33,6 +33,9 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from io import BytesIO
+from lxml import etree
+import base64
 import sys
 import os
 
@@ -63,16 +66,11 @@ def get_histogram(data, num=10):
     y_ticks = np.arange(0, n[0].max() + step_size, step_size)
     plt.yticks(y_ticks)
     # 横向参考线
-    for i in y_ticks:
-        plt.plot([data_min, data_max], [i, i], color="black", alpha=0.1)
-    # 保存到当前目录下的image文件夹，如果image不存在，创建
-    s = str(sys.argv[0]).split("/")
-    num = len(s) - 1
-    s = "\\".join(s[0:num]) + "\\image"
-    if not os.path.exists(s):  # 判断是否存在文件夹
-        os.makedirs(s)  # makedirs创建文件时如果路径不存在会创建这个路径
-    s = s + "\\histogram"
-    plt.savefig(s)
+    # for i in y_ticks:
+    #     plt.plot([data_min, data_max], [i, i], color="black", alpha=0.1)
+    plt.grid(axis="y")
+    save_html("histogram")
+    plt.close()
 
 
 def get_line_graph(x_data, y_data, x_name="x", y_name="y", label="line"):
@@ -98,24 +96,17 @@ def get_line_graph(x_data, y_data, x_name="x", y_name="y", label="line"):
     # 横纵坐标的名称
     plt.xlabel(x_name)
     plt.ylabel(y_name)
-    # 保存到当前目录下的image文件夹，如果image不存在，创建
-    s = str(sys.argv[0]).split("/")
-    num = len(s) - 1
-    s = "\\".join(s[0:num]) + "\\image"
-    if not os.path.exists(s):  # 判断是否存在文件夹
-        os.makedirs(s)  # makedirs创建文件时如果路径不存在会创建这个路径
-    s = s + "\\line_graph"
-    plt.savefig(s)
+    plt.grid()
+    save_html("line")
+    plt.close()
 
 
 def get_double_line(x_data, y_data_0, y_data_1,
                     label_0="line0", label_1="line1",
                     x_name="x", y_name="y"):
-
     # 建立窗口和尺寸
     fig = plt.figure(figsize=(12, 6))
     ax = fig.add_subplot(1, 1, 1)
-
     # 画图
     ax.plot(x_data, y_data_0, color="k", linewidth=0.5, marker="*", label=label_0)
     ax.plot(x_data, y_data_1, color="r", linewidth=0.5, marker="*", label=label_1)
@@ -124,14 +115,9 @@ def get_double_line(x_data, y_data_0, y_data_1,
     # 横纵坐标的名称
     plt.xlabel(x_name)
     plt.ylabel(y_name)
-    # 保存到当前目录下的image文件夹，如果image不存在，创建
-    s = str(sys.argv[0]).split("/")
-    num = len(s) - 1
-    s = "\\".join(s[0:num]) + "\\image"
-    if not os.path.exists(s):  # 判断是否存在文件夹
-        os.makedirs(s)  # makedirs创建文件时如果路径不存在会创建这个路径
-    s = s + "\\double_line_graph"
-    plt.savefig(s)
+    plt.grid()
+    save_html("double_line")
+    plt.close()
 
 
 def get_curve(func, num=10):
@@ -139,29 +125,42 @@ def get_curve(func, num=10):
     x_data = np.arange(0, num, num/100)
     y_data = func(x_data)
     x_ticks = range(num+1)
-
     # 画布
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(1, 1, 1)
-
     # 画图、显示方格线、横轴
     ax.plot(x_data, y_data)
     plt.grid()
     plt.xticks(x_ticks)
-
     # 点
     ax.scatter(x_ticks, np.cos(x_ticks), s=20)
-
     # 标记
     for x in x_ticks:
         y = func(x)
         plt.text(x, y+0.03, "%.4f" % y)
+    save_html("curve")
+    plt.close()
 
+
+def save_html(name):
     # 保存到当前目录下的image文件夹，如果image不存在，创建
     s = str(sys.argv[0]).split("/")
     num = len(s) - 1
     s = "\\".join(s[0:num]) + "\\image"
     if not os.path.exists(s):  # 判断是否存在文件夹
         os.makedirs(s)  # makedirs创建文件时如果路径不存在会创建这个路径
-    s = s + "\\curve"
-    plt.savefig(s)
+    s = s + "\\" + name + ".html"
+    buffer = BytesIO()
+    plt.savefig(buffer)
+    plot_data = buffer.getvalue()
+    # 图像数据转化为 HTML 格式
+    imb = base64.b64encode(plot_data)
+    ims = imb.decode()
+    imd = "data:image/png;base64," + ims
+    iris_im = """<img src="%s">""" % imd
+    root = "<title>" + name + "</title>"
+    root = root + iris_im  # 将多个 html 格式的字符串连接起来
+    # lxml 库的 etree 解析字符串为 html 代码，并写入文件
+    html = etree.HTML(root)
+    tree = etree.ElementTree(html)
+    tree.write(s)
