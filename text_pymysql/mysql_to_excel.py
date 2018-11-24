@@ -27,7 +27,7 @@ def mysql_to_excel(username, password, database_name, port, num):
     cur = db.cursor()
     for i in range(num):
         write_one_table(one_excel, "table%d" % i, cur)
-    one_excel.save("50table.xls")
+    one_excel.save("50tables.xls")
     db.close()
 
 
@@ -43,5 +43,5 @@ def write_one_table(excel_name, table_name, cur):
         row += 1
 
 
-# mysql_to_excel("root", "xxxxxxx", "text", 3306, 50)
+mysql_to_excel("root", "litao.", "text", 3306, 50)
 
