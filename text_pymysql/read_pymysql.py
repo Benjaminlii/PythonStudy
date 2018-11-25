@@ -11,7 +11,7 @@ db = pymysql.connect(host="localhost",
                      port=3306)
 # 游标 相当与输入
 cur = db.cursor()
-sql = "select * from table0;"
+sql = "if exists table0;"
 cur.execute(sql)
 result = cur.fetchall()
 print(result)
