@@ -8,6 +8,7 @@
     功能：创建一个库，三张表
     返回值：void
 
+    date:2018.11.25
     author:Benjamin
 """
 import pymysql

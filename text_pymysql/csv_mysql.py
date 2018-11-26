@@ -20,7 +20,10 @@
           port:端口号
     功能：将MySQL数据库中database_name库的与csv_name相应的表中的内容读取出来，存入.csv文件
     返回值：void
-    
+
+
+    date:2018.11.25
+    author:Benjamin
 """
 import pymysql
 import pandas as pd

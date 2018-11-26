@@ -7,6 +7,7 @@
     功能：将数据库相应库的num张以table+n为名称表存入excel中，保存到当前文件夹
     返回值：void
 
+    date:2018.11.24
     author:Benjamin
 """
 import pymysql
